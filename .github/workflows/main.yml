@@ -60,7 +60,7 @@ jobs:
             const { repo: { owner, repo }, sha } = context;
             console.log({ owner, repo, sha });
 
-                for (let file of await fs.readdir('./ssh/target")) {
+                for (let file of await fs.readdir('./ssh/target')) {
                   if (file.endsWith('.zip')) {
                     await github.rest.repos.uploadReleaseAsset({
                       owner, repo,
