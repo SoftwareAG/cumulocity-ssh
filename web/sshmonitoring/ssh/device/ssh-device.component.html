@@ -1,0 +1,312 @@
+<div class="c8y-select-wrapper" *ngIf="profiles && sshAdmin">
+  <label for="profile">Profile:</label>
+  <select
+    #profile
+    class="form-control"
+    (change)="changeProfile(profile.value)"
+    [(ngModel)]="currentProfile"
+  >
+    <option *ngFor="let p of profiles | keyvalue" [value]="p.key">
+      {{ p.value.name }}
+    </option>
+  </select>
+</div>
+
+<div class="row" *ngIf="profile">
+  <div class="tabContainer hidden-xs">
+    <ul class="nav nav-tabs nav-tabsc8y">
+      <li *ngFor="let category of profile.categories" [class]="category.active">
+        <a
+          routerlinkactive
+          [title]="category.name"
+          (click)="changeTab($event, category)"
+          href=""
+        >
+          <span class="txt">{{ category.label }}</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="row" *ngIf="profile">
+  <div *ngFor="let category of profile.categories">
+    <div class="card" *ngIf="currentTab.name == category.name">
+      <div class="card-header">
+        <button
+          class="btn btn-primary btn-icon"
+          (click)="loadPropertyValues(category.name)"
+        >
+          <i c8yIcon="refresh"></i>
+          Load all properties
+        </button>
+        <button
+          *ngFor="let action of getSimpleActions(category.name)"
+          [class]="
+            action.confirmation
+              ? 'btn btn-danger btn-icon'
+              : 'btn btn-primary btn-icon'
+          "
+          (click)="runAction(action.id)"
+        >
+          <i [c8yIcon]="action.icon"></i>
+          {{ action.name }}
+        </button>
+      </div>
+      <div class="card-block">
+        <c8y-list-group>
+          <c8y-li *ngFor="let property of filterProperties(category.name)">
+            <label *ngIf="!property.json">{{ property.label }}</label>
+            <div *ngIf="!property.json">
+              {{ getValue(device, property.name) }}
+            </div>
+            <div *ngIf="property.json && device[property.name]">
+              <c8y-data-grid
+                [title]="property.label"
+                [columns]="tables[property.name].headers"
+                [rows]="device[property.name]"
+                [pagination]="pagination"
+                [actionControls]="tables[property.name].actions"
+              ></c8y-data-grid>
+            </div>
+          </c8y-li>
+        </c8y-list-group>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="card" *ngIf="profile && currentTab.title == 'General'">
+    <div class="card-header">
+      <button
+        class="btn btn-primary btn-icon"
+        (click)="loadPropertyValues('general')"
+      >
+        <i c8yIcon="refresh"></i>
+        Load all properties
+      </button>
+      <button
+        *ngIf="profiles && sshAdmin"
+        class="btn btn-danger btn-icon"
+        (click)="runAction('reboot')"
+      >
+        <i c8yIcon="refresh"></i>
+        Reboot
+      </button>
+    </div>
+    <div class="card-block">
+      <c8y-list-group>
+        <c8y-li *ngFor="let property of filterProperties('general')">
+          <label *ngIf="!property.json">{{ property.label }}</label>
+          <div *ngIf="!property.json">
+            {{ getValue(device, property.name) }}
+          </div>
+          <div *ngIf="property.json && device[property.name]">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th *ngFor="let header of getHeaders(device[property.name])">
+                    {{ header }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of device[property.name]">
+                  <td *ngFor="let header of getHeaders(device[property.name])">
+                    {{ row[header] }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </c8y-li>
+      </c8y-list-group>
+    </div>
+  </div>
+
+  <div class="card" *ngIf="profile && currentTab.title == 'Network'">
+    <div class="card-header">
+      <button
+        class="btn btn-primary btn-icon"
+        (click)="loadPropertyValues('network')"
+      >
+        <i c8yIcon="refresh"></i>
+        Load network info
+      </button>
+    </div>
+    <div class="card-block">
+      <!--<c8y-list-group>
+      <c8y-li *ngFor="let property of filterProperties('network')">
+        {{ property.label }}:
+        <div *ngIf="!property.json">
+          {{ device[property.name] }}
+        </div>
+        <div *ngIf="property.json">
+          <table class="table">
+            <thead>
+              <tr>
+                <th *ngFor="let header of getHeaders(device[property.name])">
+                  {{ header }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of device[property.name]">
+                <td *ngFor="let header of getHeaders(device[property.name])">
+                  {{ row[header] }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </c8y-li>
+    </c8y-list-group>-->
+      <c8y-data-grid
+        [title]="'Interfaces'"
+        [columns]="networkColumns"
+        [rows]="device.network"
+        [pagination]="pagination"
+        [actionControls]="networkActionControls"
+      ></c8y-data-grid>
+    </div>
+  </div>
+
+  <div class="card" *ngIf="profile && currentTab.title == 'Certificates'">
+    <div class="card-header">
+      <button
+        class="btn btn-primary btn-icon"
+        (click)="loadPropertyValues('certificates')"
+      >
+        <i c8yIcon="refresh"></i>
+        Load certificates
+      </button>
+      <button
+        *ngIf="profiles && sshAdmin"
+        class="btn btn-primary btn-icon"
+        (click)="runAction('resetwifi')"
+      >
+        <i c8yIcon="refresh"></i>
+        Reset wifi config
+      </button>
+      <button
+        *ngIf="profiles && sshAdmin"
+        class="btn btn-primary btn-icon"
+        (click)="runAction('uploadCACerts')"
+      >
+        <i c8yIcon="upload"></i>
+        Upload CA certificates
+      </button>
+      <button
+        *ngIf="profiles && sshAdmin"
+        class="btn btn-primary btn-icon"
+        (click)="runAction('uploadKeyPair')"
+      >
+        <i c8yIcon="upload"></i>
+        Upload key pair
+      </button>
+    </div>
+    <div class="card-block">
+      <c8y-list-group>
+        <c8y-li *ngFor="let property of filterProperties('certificates')">
+          {{ property.label }}:
+          <div *ngIf="!property.json">
+            {{ device[property.name] }}
+          </div>
+          <div *ngIf="property.json">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th *ngFor="let header of getHeaders(device[property.name])">
+                    {{ header }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of device[property.name]">
+                  <td *ngFor="let header of getHeaders(device[property.name])">
+                    {{ row[header] }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </c8y-li>
+      </c8y-list-group>
+    </div>
+  </div>
+
+  <div class="card" *ngIf="profile && currentTab.title == 'Updates'">
+    <div class="card-header">
+      <button
+        class="btn btn-primary btn-icon"
+        (click)="loadPropertyValues('updates')"
+      >
+        <i c8yIcon="refresh"></i>
+        Load packages
+      </button>
+      <button
+        *ngIf="profiles && sshAdmin"
+        class="btn btn-primary btn-icon"
+        (click)="runAction('updateSource')"
+      >
+        <i c8yIcon="refresh"></i>
+        Update source
+      </button>
+      <button
+        *ngIf="profiles && sshAdmin"
+        class="btn btn-primary btn-icon"
+        (click)="runAction('upgradePackages')"
+      >
+        <i c8yIcon="upload"></i>
+        Upgrade packages
+      </button>
+      <button
+        *ngIf="profiles && sshAdmin"
+        class="btn btn-primary btn-icon"
+        (click)="runAction('upgradeFirmware')"
+      >
+        <i c8yIcon="upload"></i>
+        Upgrade firmware
+      </button>
+    </div>
+    <div class="card-block">
+      <c8y-data-grid
+        [title]="'Packages'"
+        [columns]="packageColumns"
+        [rows]="device.packages"
+        [pagination]="pagination"
+        [actionControls]="packageActionControls"
+        [bulkActionControls]="bulkPackageActionControls"
+        [selectable]="true"
+        [selectionPrimaryKey]="'name'"
+      ></c8y-data-grid>
+    </div>
+  </div>
+</div>
+
+<ng-template #actionModal>
+  <div class="modal-header" *ngIf="currentAction">
+    <h4 id="dialog-name" class="modal-title pull-left">
+      {{ currentAction.name }}
+    </h4>
+  </div>
+  <div class="modal-body" *ngIf="currentAction">
+    <div class="col-sm-12">
+      <form [formGroup]="form" *ngIf="fields">
+        <formly-form
+          [model]="parameterValues"
+          [fields]="fields[currentAction.id]"
+          [options]="options"
+          [form]="form"
+        ></formly-form>
+      </form>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-default" (click)="endRunAction()">Confirm</button>
+    <button class="btn btn-primary" (click)="actionModalRef.hide()">
+      Cancel
+    </button>
+  </div>
+</ng-template>

@@ -1,0 +1,287 @@
+<c8y-title>Devices</c8y-title>
+<div class="card" *ngIf="sshAdmin">
+  <div
+    class="card-header separator"
+    (click)="expanded = !expanded"
+    style="cursor: pointer"
+  >
+    <h4 class="card-title">Register a device</h4>
+    <button class="collapse-btn">
+      <i [c8yIcon]="expanded ? 'chevron-up' : 'chevron-down'"></i>
+    </button>
+  </div>
+  <form
+    class="collapse"
+    #provisionDeviceForm="ngForm"
+    [collapse]="!expanded"
+    [isAnimated]="true"
+  >
+    <div class="card-block">
+      <c8y-form-group
+        class="col-sm-6"
+        [hasError]="
+          deviceName.invalid && (deviceName.dirty || deviceName.touched)
+        "
+      >
+        <label for="deviceName">Name</label>
+        <input
+          class="form-control"
+          required
+          #deviceName="ngModel"
+          name="deviceName"
+          [(ngModel)]="provisionDevice.deviceName"
+        />
+        <c8y-messages
+          *ngIf="deviceName.invalid && (deviceName.dirty || deviceName.touched)"
+        >
+          <c8y-message name="required" *ngIf="deviceName.errors?.required"
+            >The device name is required
+          </c8y-message>
+        </c8y-messages>
+      </c8y-form-group>
+      <c8y-form-group
+        class="col-sm-6"
+        [hasError]="host.invalid && (host.dirty || host.touched)"
+      >
+        <label for="host">IP Address</label>
+        <input
+          required
+          #host="ngModel"
+          name="host"
+          [(ngModel)]="provisionDevice.host"
+          class="form-control"
+          aria-describedby="host-help"
+        />
+        <span id="host-help" class="help-block">
+          Required host or IP address to connect to the device.
+        </span>
+        <c8y-messages *ngIf="host.invalid && (host.dirty || host.touched)">
+          <c8y-message name="required" *ngIf="host.errors?.required"
+            >The IP address is required
+          </c8y-message>
+        </c8y-messages>
+      </c8y-form-group>
+      <c8y-form-group class="col-sm-6">
+        <label for="port">Port</label>
+        <input
+          required
+          #port="ngModel"
+          name="port"
+          [(ngModel)]="provisionDevice.port"
+          type="number"
+          class="form-control"
+          min="0"
+          max="65535"
+          aria-describedby="port-help"
+          placeholder="22"
+        />
+        <span id="port-help" class="help-block">
+          Required port to connect to the device.
+        </span>
+        <c8y-messages *ngIf="port.invalid && (port.dirty || port.touched)">
+          <c8y-message name="required" *ngIf="port.errors?.required"
+            >The port is required
+          </c8y-message>
+        </c8y-messages>
+      </c8y-form-group>
+      <c8y-form-group
+        class="col-sm-6"
+        [hasError]="user.invalid && (user.dirty || user.touched)"
+      >
+        <label for="user">User</label>
+        <input
+          class="form-control"
+          required
+          #user="ngModel"
+          name="user"
+          [(ngModel)]="provisionDevice.user"
+          aria-describedby="user-help"
+        />
+        <span id="user-help" class="help-block">
+          Required user to connect to the device.
+        </span>
+        <c8y-messages *ngIf="user.invalid && (user.dirty || user.touched)">
+          <c8y-message name="required" *ngIf="user.errors?.required"
+            >The user name is required
+          </c8y-message>
+        </c8y-messages>
+      </c8y-form-group>
+      <c8y-form-group class="col-sm-6">
+        <label class="c8y-checkbox">
+          <input
+            type="checkbox"
+            class="form-control"
+            #passwordProtected="ngModel"
+            name="passwordProtected"
+            [(ngModel)]="provisionDevice.passwordProtected"
+          />
+          <span></span>
+          <span>Use password instead of certificate</span>
+        </label>
+      </c8y-form-group>
+      <c8y-form-group class="col-sm-6">
+        <div class="c8y-select-wrapper">
+          <label for="profile">Select profile:</label>
+          <select
+            #profile
+            class="form-control"
+            name="profile"
+            [(ngModel)]="provisionDevice.profile"
+          >
+            <option
+              *ngFor="let p of sshService.profiles | keyvalue"
+              [value]="p.key"
+            >
+              {{ p.value.name }}
+            </option>
+          </select>
+        </div>
+      </c8y-form-group>
+      <c8y-form-group class="col-sm-12">
+        <label for="credentials"> Credentials (password or certificate) </label>
+        <textarea
+          class="form-control"
+          required
+          #credentials="ngModel"
+          name="credentials"
+          [(ngModel)]="provisionDevice.credentials"
+        ></textarea>
+      </c8y-form-group>
+    </div>
+    <div class="card-footer">
+      <div class="form-group">
+        <button
+          type="button"
+          [disabled]="!provisionDeviceForm.form.valid"
+          (click)="addDeviceFromForm()"
+          class="btn btn-primary"
+        >
+          Add device
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="split-scroll">
+  <c8y-device-grid
+    #deviceGrid
+    [title]="'Devices' | translate"
+    class="scroll-column"
+    [columns]="columns"
+    [selectable]="true"
+    [actionControls]="actionControls"
+    [baseQuery]="baseQuery"
+    [bulkActionControls]="bulkActionControls"
+    [columnsConfigKey]="GRID_CONFIG_KEY"
+    legacyConfigKey="all-devices-columns-meta_"
+    legacyFilterKey="all-devices-columns-config"
+  >
+  </c8y-device-grid>
+</div>
+
+<ng-template #deleteDeviceModal>
+  <div class="modal-header">
+    <h4 id="dialog-name" class="modal-title pull-left">
+      Confirm device deletion
+    </h4>
+  </div>
+  <div class="modal-body">Device will be removed from inventory<br /></div>
+  <div class="modal-footer">
+    <button class="btn btn-default" (click)="endDelete()">Confirm</button>
+    <button class="btn btn-primary" (click)="deleteDeviceModalRef.hide()">
+      Cancel
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #deleteDevicesModal>
+  <div class="modal-header">
+    <h4 id="dialog-name" class="modal-title pull-left">
+      Confirm devices deletion
+    </h4>
+  </div>
+  <div class="modal-body">Devices will be removed from inventory<br /></div>
+  <div class="modal-footer">
+    <button class="btn btn-default" (click)="endDeleteAll()">Confirm</button>
+    <button class="btn btn-primary" (click)="deleteDevicesModalRef.hide()">
+      Cancel
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #rebootDeviceModal>
+  <div class="modal-header">
+    <h4 id="dialog-name" class="modal-title pull-left">
+      Confirm device reboot
+    </h4>
+  </div>
+  <div class="modal-body">Device will be rebooted<br /></div>
+  <div class="modal-footer">
+    <button class="btn btn-default" (click)="endReboot()">Confirm</button>
+    <button class="btn btn-primary" (click)="rebootDeviceModalRef.hide()">
+      Cancel
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #rebootDevicesModal>
+  <div class="modal-header">
+    <h4 id="dialog-name" class="modal-title pull-left">
+      Confirm devices reboot
+    </h4>
+  </div>
+  <div class="modal-body">Devices will be rebooted<br /></div>
+  <div class="modal-footer">
+    <button class="btn btn-default" (click)="endRebootAll()">Confirm</button>
+    <button class="btn btn-primary" (click)="rebootDevicesModalRef.hide()">
+      Cancel
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #changeDeviceTypeModal>
+  <div class="modal-header">
+    <h4 id="dialog-name" class="modal-title pull-left">Change device type</h4>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      <label class="form-control">Type new device type</label>
+      <input #changeType required />
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button
+      class="btn btn-default"
+      (click)="endChangeDeviceType(changeType.value)"
+    >
+      Confirm
+    </button>
+    <button class="btn btn-primary" (click)="changeDeviceTypeModalRef.hide()">
+      Cancel
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #changeDevicesTypeModal>
+  <div class="modal-header">
+    <h4 id="dialog-name" class="modal-title pull-left">Change devices type</h4>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      <label class="form-control">Type new devices type</label>
+      <input #changeType required />
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button
+      class="btn btn-default"
+      (click)="endChangeDevicesType(changeType.value)"
+    >
+      Confirm
+    </button>
+    <button class="btn btn-primary" (click)="changeDevicesTypeModalRef.hide()">
+      Cancel
+    </button>
+  </div>
+</ng-template>

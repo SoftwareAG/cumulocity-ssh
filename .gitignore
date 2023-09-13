@@ -1,0 +1,7 @@
+/.classpath
+/.project
+/.settings/
+/.vscode/
+/web/sshmonitoring/dist
+/web/sshmonitoring/node_modules
+/ssh/.mvn
