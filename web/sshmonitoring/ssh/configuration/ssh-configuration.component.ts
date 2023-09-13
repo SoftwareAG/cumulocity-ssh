@@ -209,7 +209,7 @@ export class SSHConfigurationComponent implements OnInit {
 
   deleteCategory(category) {
     if (category.canDelete) {
-      this.categories.splice(this.categories.indexOf(category));
+      this.categories.splice(this.categories.indexOf(category), 1);
     }
   }
 
@@ -219,7 +219,7 @@ export class SSHConfigurationComponent implements OnInit {
 
   deleteProperty(property) {
     if (property.canDelete) {
-      this.properties.splice(this.properties.indexOf(property));
+      this.properties.splice(this.properties.indexOf(property), 1);
     }
   }
 
@@ -228,7 +228,7 @@ export class SSHConfigurationComponent implements OnInit {
   }
 
   deleteMeasurement(measurement) {
-    this.measurements.splice(this.measurements.indexOf(measurement));
+    this.measurements.splice(this.measurements.indexOf(measurement), 1);
   }
 
   addMeasurement() {
@@ -236,7 +236,7 @@ export class SSHConfigurationComponent implements OnInit {
   }
 
   deleteOperation(operation) {
-    this.operations.splice(this.operations.indexOf(operation));
+    this.operations.splice(this.operations.indexOf(operation), 1);
   }
 
   addOperation() {
@@ -244,7 +244,7 @@ export class SSHConfigurationComponent implements OnInit {
   }
 
   deleteElement(operation: DeviceOperation, element: DeviceOperationElement) {
-    operation.elements.splice(operation.elements.indexOf(element));
+    operation.elements.splice(operation.elements.indexOf(element), 1);
   }
 
   moveUp(operation: DeviceOperation, element: DeviceOperationElement) {
@@ -284,7 +284,7 @@ export class SSHConfigurationComponent implements OnInit {
   }
 
   deleteValue(param: DeviceOperationElement, value: string) {
-    param.values.splice(param.values.indexOf(value));
+    param.values.splice(param.values.indexOf(value), 1);
     console.log(param.values);
   }
 
