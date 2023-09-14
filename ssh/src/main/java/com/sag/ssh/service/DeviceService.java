@@ -40,6 +40,7 @@ import com.sag.ssh.api.Property;
 
 import c8y.IsDevice;
 import c8y.RequiredAvailability;
+import c8y.SupportedConfigurations;
 import c8y.SupportedOperations;
 import lombok.extern.slf4j.Slf4j;
 
@@ -88,7 +89,12 @@ public class DeviceService {
         supportedOperations.add("c8y_Command");
         supportedOperations.add("c8y_Restart");
         supportedOperations.add("c8y_SoftwareUpdate");
+        supportedOperations.add("c8y_DownloadConfigFile");
+        supportedOperations.add("c8y_DeviceProfile");
         device.set(supportedOperations);
+        SupportedConfigurations supportedConfigurations = new SupportedConfigurations();
+        supportedConfigurations.add("proxy_conf");
+        supportedConfigurations.add("cert_conf");
         device.set(new RequiredAvailability(2));
         device = inventoryApi.create(device);
         agentService.addDevice(device);
