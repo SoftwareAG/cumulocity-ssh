@@ -1,9 +1,9 @@
 {
-  "name": "SSH Connector",
+  "name": "ssh-Connector",
   "version": "1016.0.315",
   "description": "Allows managing device through direct SSH connection",
   "scripts": {
-    "start": "c8ycli server -u https://192.168.1.179",
+    "start": "c8ycli server",
     "build": "c8ycli build",
     "deploy": "c8ycli deploy",
     "locale-extract": "c8ycli locale-extract",
@@ -48,14 +48,26 @@
   "c8y": {
     "application": {
       "name": "SSH Connector",
-      "contextPath": "sshmonitoring",
-      "key": "sshmonitoring-application-key",
-      "upgrade": true,
-      "rightDrawer": true,
-      "breadcrumbs": false,
-      "contentSecurityPolicy": "base-uri 'none'; default-src 'self' 'unsafe-inline' http: https: ws: wss:; connect-src 'self' http: https: ws: wss:;  script-src 'self' *.mapquestapi.com *.twitter.com *.twimg.com *.aptrinsic.com 'unsafe-inline' 'unsafe-eval' data:; style-src * 'unsafe-inline' blob:; img-src * data: blob:; font-src * data:; frame-src *; worker-src 'self' blob:;",
-      "dynamicOptionsUrl": "/apps/public/public-options/options.json",
-      "contextHelp": true
+      "contextPath": "sag-ps-pkg-ssh-connector",
+      "key": "sag-ps-pkg-ssh-connector-application-key",
+      "globalTitle": "This plugin is the companion of the SSH connector microservice and helps you manage devices with direct SSH connections."
+      "tabsHorizontal": true,
+      "noAppSwitcher": true,
+      "package": "plugin",
+      "isPackage": true,
+      "exports": [
+        {
+          "name": "SSH Connector plugin",
+          "module": "SSHModule",
+          "path": "./ssh/ssh.module.ts",
+          "description": "This plugin is the companion of the SSH connector microservice and helps you manage devices with direct SSH connections."
+        }
+      ],
+      "remotes": {
+        "sag-ps-pkg-ssh-connector": [
+          "SSHModule"
+        ]
+      }
     },
     "cli": {}
   },
