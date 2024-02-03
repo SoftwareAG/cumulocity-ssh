@@ -1,5 +1,5 @@
 {
-  "name": "ssh-Connector",
+  "name": "ssh-connector",
   "version": "1016.0.315",
   "description": "Allows managing device through direct SSH connection",
   "scripts": {
@@ -50,7 +50,7 @@
       "name": "SSH Connector",
       "contextPath": "sag-ps-pkg-ssh-connector",
       "key": "sag-ps-pkg-ssh-connector-application-key",
-      "globalTitle": "This plugin is the companion of the SSH connector microservice and helps you manage devices with direct SSH connections."
+      "globalTitle": "This plugin is the companion of the SSH connector microservice and helps you manage devices with direct SSH connections.",
       "tabsHorizontal": true,
       "noAppSwitcher": true,
       "package": "plugin",
