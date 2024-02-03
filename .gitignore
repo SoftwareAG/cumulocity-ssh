@@ -2,6 +2,6 @@
 /.project
 /.settings/
 /.vscode/
-/web/sshmonitoring/dist
-/web/sshmonitoring/node_modules
+/web/ssh-connector/dist
+/web/ssh-connector/node_modules
 /ssh/.mvn

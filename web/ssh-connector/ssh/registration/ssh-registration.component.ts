@@ -39,7 +39,7 @@ import {
   DeviceGridComponent,
   DeviceGridService,
 } from "@c8y/ngx-components/device-grid";
-import { SSHService } from "../../ssh/service/SSHService";
+import { SSHService } from "../service/SSHService";
 
 @Component({
   selector: "ssh-registration",
