@@ -1,7 +1,7 @@
 {
-  "name": "sshmonitoring",
+  "name": "SSH Connector",
   "version": "1016.0.315",
-  "description": "",
+  "description": "Allows managing device through direct SSH connection",
   "scripts": {
     "start": "c8ycli server -u https://192.168.1.179",
     "build": "c8ycli build",
@@ -47,7 +47,7 @@
   },
   "c8y": {
     "application": {
-      "name": "Device management",
+      "name": "SSH Connector",
       "contextPath": "sshmonitoring",
       "key": "sshmonitoring-application-key",
       "upgrade": true,
