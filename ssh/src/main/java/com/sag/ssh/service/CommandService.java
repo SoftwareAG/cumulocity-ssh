@@ -3,10 +3,7 @@ package com.sag.ssh.service;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.security.KeyPair;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -72,33 +69,24 @@ public class CommandService {
 
     private Map<String, Map<String, Configuration>> configurations = new HashMap<>();
 
-    private ActionResult softwareUpdate(List<Map<String, String>> softwareUpdates, GId deviceId) {
+    private ActionResult softwareUpdate(List<Map<String, Object>> softwareUpdates, GId deviceId) {
         final ActionResult currentActionResult = new ActionResult();
         ManagedObjectRepresentation device = inventoryApi.get(deviceId);
-        final List<Map<String, String>> softwareList = new ArrayList<>();
+        final List<Map<String, Object>> softwareList = new ArrayList<>();
         if (device.hasProperty("c8y_SoftwareList")) {
-            softwareList.addAll((List<Map<String, String>>) device.getProperty("c8y_SoftwareList"));
+            softwareList.addAll((List<Map<String, Object>>) device.getProperty("c8y_SoftwareList"));
         }
         softwareUpdates.forEach(softwareUpdate -> {
             if (softwareUpdate.get("action").equals("install")) {
-                Map<String, Object> parameters = new HashMap<>();
-                parameters.put("url", softwareUpdate.get("url"));
-                parameters.put("filename", softwareUpdate.get("name")
-                        + "-"
-                        + softwareUpdate.get("version"));
                 ActionResult localResult = deviceService.executeAction(deviceId.getValue(),
-                        "installSoftware", parameters);
+                        "installSoftware", softwareUpdate);
                 if (localResult.getStatus() == 0) {
                     softwareList.add(softwareUpdate);
                 }
                 currentActionResult.addActionResult(localResult);
             } else if (softwareUpdate.get("action").equals("delete")) {
-                Map<String, Object> parameters = new HashMap<>();
-                parameters.put("filename", softwareUpdate.get("name")
-                        + "-"
-                        + softwareUpdate.get("version"));
                 ActionResult localResult = deviceService.executeAction(deviceId.getValue(),
-                        "uninstallSoftware", parameters);
+                        "uninstallSoftware", softwareUpdate);
                 if (localResult.getStatus() == 0) {
                     Object[] entryToDelete = new Object[1];
                     softwareList.forEach(entry -> {
@@ -166,7 +154,7 @@ public class CommandService {
         } else if (operation.get(Restart.class) != null) {
             result = deviceService.executeAction(operation.getDeviceId().getValue(), "reboot", null);
         } else if (operation.hasProperty("c8y_SoftwareUpdate")) {
-            List<Map<String, String>> softwareUpdates = (List<Map<String, String>>) operation
+            List<Map<String, Object>> softwareUpdates = (List<Map<String, Object>>) operation
                     .getProperty("c8y_SoftwareUpdate");
             result = softwareUpdate(softwareUpdates, operation.getDeviceId());
         } else if (operation.get(Action.class) != null) {
@@ -192,7 +180,7 @@ public class CommandService {
             final ActionResult currentActionResult = new ActionResult();
             if (deviceProfile.containsKey("software")) {
                 currentActionResult
-                        .addActionResult(softwareUpdate((List<Map<String, String>>) deviceProfile.get("software"),
+                        .addActionResult(softwareUpdate((List<Map<String, Object>>) deviceProfile.get("software"),
                                 operation.getDeviceId()));
             }
             if (deviceProfile.containsKey("configuration")) {

@@ -1,6 +1,7 @@
 package com.sag.ssh;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 
 import java.util.Map;
@@ -9,7 +10,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
@@ -98,6 +98,15 @@ public class TestActions {
                 context);
         log.info(result);
         assertThat(result, is("echo BCM3823 true This is param2!"));
+    }
+
+    @Test
+    public void testAccessRootContext() {
+        Context context = new Context();
+        context.setVariable("test", "coucou");
+        String result = templateEngine.process("[(${#vars})]", context);
+        log.info(result);
+        assertThat(result, result.contains("test=coucou"));
     }
 
 }
