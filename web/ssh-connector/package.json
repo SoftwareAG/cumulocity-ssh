@@ -47,8 +47,8 @@
   "c8y": {
     "application": {
       "name": "SSH Connector",
-      "contextPath": "sag-ps-pkg-ssh-connector",
-      "key": "sag-ps-pkg-ssh-connector-application-key",
+      "contextPath": "sag-iot-pkg-ssh-connector-package",
+      "key": "sag-iot-pkg-ssh-connector-package-application-key",
       "globalTitle": "This plugin is the companion of the SSH connector microservice and helps you manage devices with direct SSH connections.",
       "tabsHorizontal": true,
       "noAppSwitcher": true,
