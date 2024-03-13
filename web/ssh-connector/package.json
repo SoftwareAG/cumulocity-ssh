@@ -10,7 +10,11 @@
     "postinstall": "ngcc",
     "test": "jest"
   },
-  "keywords": [],
+  "keywords": [
+    "Cumulocity",
+    "Plugin",
+    "Widget"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
