@@ -63,7 +63,7 @@
         }
       ],
       "remotes": {
-        "sag-ps-pkg-ssh-connector": [
+        "sag-iot-pkg-ssh-connector-package": [
           "SSHModule"
         ]
       }
