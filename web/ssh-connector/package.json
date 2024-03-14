@@ -12,11 +12,10 @@
   },
   "keywords": [
     "Cumulocity",
-    "Plugin",
-    "Widget"
+    "Plugin"
   ],
-  "author": "",
-  "license": "ISC",
+  "author": "Cyril PODER",
+  "license": "Apache",
   "dependencies": {
     "@angular/animations": "14.0.6",
     "@angular/cdk": "14.1.2",
@@ -51,8 +50,8 @@
   "c8y": {
     "application": {
       "name": "SSH Connector",
-      "contextPath": "sag-iot-pkg-ssh-connector-package",
-      "key": "sag-iot-pkg-ssh-connector-package-application-key",
+      "contextPath": "sag-ps-iot-pkg-ssh-connector-package",
+      "key": "sag-ps-iot-pkg-ssh-connector-package-application-key",
       "globalTitle": "This plugin is the companion of the SSH connector microservice and helps you manage devices with direct SSH connections.",
       "tabsHorizontal": true,
       "noAppSwitcher": true,
@@ -67,7 +66,7 @@
         }
       ],
       "remotes": {
-        "sag-iot-pkg-ssh-connector-package": [
+        "sag-ps-iot-pkg-ssh-connector-package": [
           "SSHModule"
         ]
       }
