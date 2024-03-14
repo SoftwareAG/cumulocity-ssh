@@ -1,6 +1,6 @@
 {
   "name": "ssh-connector",
-  "version": "1016.0.315",
+  "version": "1.0.0",
   "description": "Allows managing device through direct SSH connection",
   "scripts": {
     "start": "c8ycli server",
