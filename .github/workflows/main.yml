@@ -85,8 +85,8 @@ jobs:
           cd web/ssh-connector
           npm install --force
           npm run build
-          cd dist/apps/sag-iot-pkg-ssh-connector-package
-          zip -r sag-iot-pkg-ssh-connector-package *
+          cd dist/apps/sag-ps-iot-pkg-ssh-connector-package
+          zip -r sag-ps-iot-pkg-ssh-connector-package *
       - name: Create Release
         uses: actions/github-script@v6
         env:
@@ -105,7 +105,7 @@ jobs:
               owner, repo,
               release_id: process.env.RELEASE_ID,
               name: 'sag-iot-pkg-ssh-connector-package.zip',
-              data: await fs.readFile('web/ssh-connector/dist/apps/sag-iot-pkg-ssh-connector-package/sag-iot-pkg-ssh-connector-package.zip')
+              data: await fs.readFile('web/ssh-connector/dist/apps/sag-ps-iot-pkg-ssh-connector-package/sag-ps-iot-pkg-ssh-connector-package.zip')
             });
   clean_up_if_failure:
     runs-on: ubuntu-latest
